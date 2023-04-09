@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "clipboard-copy": "^4.0.1",
     "netlify-cli": "^13.2.2",
     "vue": "^3.2.25"
   },

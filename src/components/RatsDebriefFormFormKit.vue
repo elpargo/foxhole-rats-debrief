@@ -1,14 +1,12 @@
 <template>
-    <label>Your Debrief</label>
-    <p v-if="data.playerName">{{ data.playerName }}</p> 
+    <h1>Your Debrief</h1>
+    <p v-if="data.playerName">{{ data.playerName }}'s</p> 
     <p>Debrief for Ticket: {{ data.ticketNumber }}</p>
     <p>Was it a Code RED? {{ data.hasCodeRed ? "YES" : "no" }}</p>
     <p v-if="data.hasManufactured">Manufactured {{ data.manufacturedAmount }} {{ data.manufacturedGoods }} and earned {{ data.manufacturedAmount*3 }}</p>
     <p v-if="data.hasTransported">Transported {{ data.TransportedAmount }} {{ data.transportedGoods }} by {{ data.TransportedMedium }} and earned {{ data.transportPoints }}</p>
     <p v-if="data.hasRTB">Returned (RTB) with {{ data.returnedResources }} and earned {{ data.gatheringPoints }}</p>
     <p v-else>No Return to BASE (no RTB)</p>
-
-    <button @click="copyToClipboard">Copy to Clipboard</button>
                             
     <FormKit type="form" v-model="data" @submit="handleSubmit">
         <FormKitSchema :schema="schema" :data="data" />
@@ -120,7 +118,6 @@ const data = ref({
 const manufacturePoints = computed(() => {
   return data.manufacturedAmount * 3;
 })
-
 
 const handleSubmit = () => alert("Valid submit!");
 </script>

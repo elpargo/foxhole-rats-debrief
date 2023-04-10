@@ -35,7 +35,6 @@
 </template>
 
 <script>
-//     ticket (CR), name, what , LBP
 //import copy from "clipboard-copy";
 
 export default {
@@ -46,7 +45,6 @@ export default {
             three: "",
             four: "",
             five:"",
-//            calculatedPoints: "sadasd",
         }
     },
     computed: {
@@ -66,30 +64,3 @@ export default {
 <style>
 
 </style>
-/*
-figure out how localStorage works
-localStorage.getItem("one")
-*/
-/*
-the values in supplies and vehicles always stay the same. for scrooping, I count in 5k increments, so for example, if one scroops 7.5k I round up to 10k = 2LBP /1.5k scroop is rounded up to 5 = 1LBP
-
-5k salvage = 1 LBP = 2500Bmats
-5k salvage = 1 LBP = 500 Emats
-5k salvage = 1 LBP = 500 Diesel
-5k coal = 1 LBP = 1000 gravel
-5k sulfur = 2 LBP = 250 HEmats
-5k components = 3 LBP = 250rmats
-Transportation = 1 LBP / hex travelled (start hex does not count), freighters and trains are x2 LBP
-
-
-The above is the basis for all calculations
-[1:28 PM]
---------------------------------------------------------------------------------
-
-Example:
-
-#0000 Debrief; Capo; 5k salvage; 15c SS cooked; 15c SS delivered by hauler; 3 hexes; RTB 5k comps.
-Capo; Salvage 5k = 1LBP; 15c SS cooked = 1LBP (supplies), 3hex driven = 3LBP (1/hex); returned with 5k comps = 3LBP  /// total = 8LBP (edited)
-
-
-*/

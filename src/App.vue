@@ -1,6 +1,6 @@
 <script setup>
-import RatsDefriefForm from "./components/RatsDebriefForm.vue"
 import RatsDefriefFormOldSchool from "./components/RatsDebriefFormOldSchool.vue"
+import RatsDefriefFormFormKit from "./components/RatsDebriefFormFormKit.vue"
 
 </script>
 
@@ -11,14 +11,15 @@ import RatsDefriefFormOldSchool from "./components/RatsDebriefFormOldSchool.vue"
       <div class="col-lg-6 mx-auto">
         <p class="fs-5 mb-4">Quick tool to calculate LBP and then who knows... in hope to replace's Capo's Brain</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" @click="scrollToElement">New Awesomenessss</button>
-          <button type="button" class="btn btn-secondary btn-lg px-4 gap-3" @click="scrollToElement">Olds School model</button>
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3">New Awesomenessss</button>
+          <button type="button" class="btn btn-secondary btn-lg px-4 gap-3">Olds School model</button>
         </div>
       </div>
     </div>
   </div>
-
-<RatsDefriefFormOldSchool/>
+ 
+<div class="text-bg-success"><RatsDefriefFormFormKit/></div>
+<div class="text-bg-primary"><RatsDefriefFormOldSchool/></div>
 
 <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
     <div class="col-md-4 d-flex align-items-center">

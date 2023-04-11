@@ -1,16 +1,20 @@
 <template>
-    <h1>Your Debrief</h1>
-    <p v-if="data.playerName">{{ data.playerName }}'s</p> 
-    <p>Debrief for Ticket: {{ data.ticketNumber }}</p>
-    <p>Was it a Code RED? {{ data.hasCodeRed ? "YES" : "no" }}</p>
-    <p v-if="data.hasManufactured">Manufactured {{ data.manufacturedAmount }} {{ data.manufacturedGoods }} and earned {{ data.manufacturedAmount*3 }}</p>
-    <p v-if="data.hasTransported">Transported {{ data.TransportedAmount }} {{ data.transportedGoods }} by {{ data.TransportedMedium }} and earned {{ data.transportPoints }}</p>
-    <p v-if="data.hasRTB">Returned (RTB) with {{ data.returnedResources }} and earned {{ data.gatheringPoints }}</p>
-    <p v-else>No Return to BASE (no RTB)</p>
-                            
-    <FormKit type="form" v-model="data" @submit="handleSubmit">
-        <FormKitSchema :schema="schema" :data="data" />
-    </FormKit>
+  <div class="bg-secondary">
+    <h2>Your Debrief</h2>
+    <p v-if="data.playerName">{{ data.playerName }}'s</p>
+    <p v-if="data.ticketNumber">Debrief for Ticket: {{ data.ticketNumber }}</p>
+    <p v-if="data.hasResourceGathered">Gathered {{ data.resourceAmount }} {{data.resourceGathered }} and earned {{ gatheringPoints }}</p>
+
+    <p v-if="data.hasManufactured">Manufactured {{ data.manufacturedAmount }} {{ data.manufacturedGoods }} and earned {{ manufacturePoints }}</p>
+    <p v-if="data.hasTransported">Transported {{ data.transportedGoods }} by {{ data.transportedMedium }} and earned {{ transportPoints }}</p>
+    <p v-if="totalPoints">TOTAL Points! : {{ totalPoints }}</p>
+    <p v-if="data.hasCodeRed">Was it a Code RED? {{ data.hasCodeRed ? "YES" : "no" }}</p>
+
+  </div>
+                          
+  <FormKit type="form" v-model="data" @submit="handleSubmit">
+      <FormKitSchema :schema="schema" :data="data" />
+  </FormKit>
 
 <hr>
 <hr>
@@ -18,7 +22,7 @@
 <p>Coding stuff here pay no attention to this part hehe</p>
 <input type="text" class='form-control' v-bind:value=data disabled>
 <pre>
-    {{ data }}
+  {{ data }}
 </pre>
 
 </template>
@@ -29,94 +33,139 @@ import { FormKitSchema } from "@formkit/vue";
 import { ref, computed, reactive } from "vue";
 
 const schema = [
-  {
-    $formkit: "number",
-    name: "ticketNumber",
-    label: "Ticket Number",
-    help: "Leave Empty if LBR"
-  },
-  {
-    $formkit: "text",
-    name: "playerName",
-    label: "Who are you?",
-    help: "In game-name please",
-    validation:"required"
-  },
-  {
-    $formkit: "checkbox",
-    name: "hasCodeRed",
-    label: "Is this a Code RED?",
-  },
-  {
-    $formkit: "checkbox",
-    name: "hasManufactured",
-    label: "Did you manufactured something?",
-  },
-  {
-    $formkit: "text",
-    name: "manufacturedGoods",
-    label: "What you manufactured?",
-    if: "$hasManufactured",
-  },
-  {
-    $formkit: "number",
-    name: "manufacturedAmount",
-    label: "How Much?",
-    if: "$hasManufactured",
-  },
-  {
-    $formkit: "checkbox",
-    name: "hasTransported",
-    label: "Did you Transported something?",
-  },
-  {
-    $formkit: "text",
-    name: "transportedGoods",
-    label: "What you Transported?",
-    if: "$hasTransported",
-  },
-  {
-    $formkit: "number",
-    name: "TransportedAmount",
-    label: "How Much?",
-    if: "$hasTransported",
-  },
-  {
-    $formkit: "select",
-    name: "TransportedMedium",
-    label: "Means of Transportation?",
-    if: "$hasTransported",
-    options:['Truck', 'Ship', 'Train'],
-  },
-  {
-    $formkit: "text",
-    name: "hexTraveled",
-    label: "How many hexes you travelled",
-    help: "Use common sense for distance. If you traveled from the center of the hex then 2 full hexes and then to the center again. That's 3",
-    if: "$hasTransported",
-  },
-  {
-    $formkit: "checkbox",
-    name: "hasRTB",
-    label: "Did you Returned to Base?",
-  },
-  {
-    $formkit: "text",
-    name: "returnedResources",
-    label: "Full of Raw resources?",
-    if: "$hasRTB",
-  },
+{
+  $formkit: "number",
+  name: "ticketNumber",
+  label: "Ticket Number",
+  help: "Leave Empty if LBR"
+},
+{
+  $formkit: "text",
+  name: "playerName",
+  label: "Who are you?",
+  help: "In game-name please",
+  validation:"required"
+},
+{
+  $formkit: "checkbox",
+  name: "hasResourceGathered",
+  label: "Did you scrooped something?",
+},
+{
+  $formkit: "select",
+  name: "resourceGathered",
+  label: "Which Resource you collected?",
+  help: "Salvage, Components, Coal?",
+  options:['Salvage','Coal','Sulfur','Components',],
+  if: "$hasResourceGathered",
+},
+{
+  $formkit: "number",
+  name: "resourceAmount",
+  label: "How many?",
+  if: "$hasResourceGathered",
+},
+{
+  $formkit: "checkbox",
+  name: "hasManufactured",
+  label: "Did you manufactured something?",
+},
+{
+  $formkit: "text",
+  name: "manufacturedGoods",
+  label: "What you manufactured?",
+  if: "$hasManufactured",
+},
+{
+  $formkit: "number",
+  name: "manufacturedAmount",
+  label: "How Much?",
+  if: "$hasManufactured",
+},
+{
+  $formkit: "checkbox",
+  name: "hasTransported",
+  label: "Did you Transported something?",
+},
+{
+  $formkit: "text",
+  name: "transportedGoods",
+  label: "What you Transported?",
+  if: "$hasTransported",
+  help: "Is this needed?",
+},
+{
+  $formkit: "select",
+  name: "transportedMedium",
+  label: "Means of Transportation?",
+  if: "$hasTransported",
+  options:['Truck', 'Ship', 'Train'],
+},
+{
+  $formkit: "number",
+  name: "transportedLegs",
+  label: "How many legs",
+  help: "If one-way trip 1, if RTB 2, if 5 full trips then 10 and so on",
+  if: "$hasTransported",
+},
+{
+  $formkit: "number",
+  name: "hexTraveledPerLeg",
+  label: "How many hexes you travelled PER LEG!",
+  help: "Use common sense for distance. If you traveled from the center of the hex then 2 full hexes and then to the center again. That's 3",
+  if: "$hasTransported",
+},
+{
+  $formkit: "checkbox",
+  name: "hasCodeRed",
+  label: "Is this a Code RED?",
+},
 ];
 
 const data = ref({
- // manufacturePoints: 0,
-  transportPoints:0,
-  gatheringPoints:0,
-  totalPoints:0,
+totalPoints:0,
 });
 
+const transportPoints = computed(() => {
+  var multiplier;
+  switch(data.value.transportedMedium){
+    case "Truck":
+      multiplier = 1
+      break;
+    case "Ship":
+    case "Train":
+      multiplier = 2
+  }
+return data.value.transportedLegs * data.value.hexTraveledPerLeg * multiplier;
+})
+
 const manufacturePoints = computed(() => {
-  return data.manufacturedAmount * 3;
+return 0;
+})
+
+const gatheringPoints = computed(() => {
+  var multiplier;
+  switch(data.value.resourceGathered){
+    case 'Salvage':
+    case 'Coal':
+      multiplier = 1;
+    break;
+    case 'Sulfur':
+      multiplier = 2;
+    break;
+    case 'Components':
+      multiplier = 3;
+    break;
+  }
+  return Math.ceil(data.value.resourceAmount / 5000) * multiplier;
+})
+
+const totalPoints = computed(() => {
+  var multiplier = 0;
+  if (data.value.hasCodeRed) {
+    multiplier = 3;
+  }
+  return (gatheringPoints.value + manufacturePoints.value + transportPoints.value) * multiplier;
 })
 
 const handleSubmit = () => alert("Valid submit!");

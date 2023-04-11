@@ -1,13 +1,16 @@
 <template>
-  <h1>Your Debrief</h1>
-  <p v-if="data.playerName">{{ data.playerName }}'s</p> 
-  <p>Debrief for Ticket: {{ data.ticketNumber }}</p>
-  <p>Was it a Code RED? {{ data.hasCodeRed ? "YES" : "no" }}</p>
-  <p v-if="data.hasManufactured">Manufactured {{ data.manufacturedAmount }} {{ data.manufacturedGoods }} and earned {{ manufacturePoints }}</p>
-  <p v-if="data.hasTransported">Transported {{ data.transportedAmount }} {{ data.transportedGoods }} by {{ data.transportedMedium }} and earned {{ transportPoints }}</p>
-  <p v-if="data.hasRTB">Returned (RTB) with {{ data.returnedResources }} and earned {{ gatheringPoints }}</p>
-  <p v-else>No Return to BASE (no RTB)</p>
-  <p>TOTAL Points! : {{ totalPoints }}</p>
+  <div class="bg-secondary">
+    <h2>Your Debrief</h2>
+    <p v-if="data.playerName">{{ data.playerName }}'s</p>
+    <p v-if="data.ticketNumber">Debrief for Ticket: {{ data.ticketNumber }}</p>
+    <p v-if="data.hasResourceGathered">Gathered {{ data.resourceAmount }} {{data.resourceGathered }} and earned {{ gatheringPoints }}</p>
+
+    <p v-if="data.hasManufactured">Manufactured {{ data.manufacturedAmount }} {{ data.manufacturedGoods }} and earned {{ manufacturePoints }}</p>
+    <p v-if="data.hasTransported">Transported {{ data.transportedGoods }} by {{ data.transportedMedium }} and earned {{ transportPoints }}</p>
+    <p v-if="totalPoints">TOTAL Points! : {{ totalPoints }}</p>
+    <p v-if="data.hasCodeRed">Was it a Code RED? {{ data.hasCodeRed ? "YES" : "no" }}</p>
+
+  </div>
                           
   <FormKit type="form" v-model="data" @submit="handleSubmit">
       <FormKitSchema :schema="schema" :data="data" />
@@ -45,8 +48,22 @@ const schema = [
 },
 {
   $formkit: "checkbox",
-  name: "hasCodeRed",
-  label: "Is this a Code RED?",
+  name: "hasResourceGathered",
+  label: "Did you scrooped something?",
+},
+{
+  $formkit: "select",
+  name: "resourceGathered",
+  label: "Which Resource you collected?",
+  help: "Salvage, Components, Coal?",
+  options:['Salvage','Coal','Sulfur','Components',],
+  if: "$hasResourceGathered",
+},
+{
+  $formkit: "number",
+  name: "resourceAmount",
+  label: "How many?",
+  if: "$hasResourceGathered",
 },
 {
   $formkit: "checkbox",
@@ -75,12 +92,7 @@ const schema = [
   name: "transportedGoods",
   label: "What you Transported?",
   if: "$hasTransported",
-},
-{
-  $formkit: "number",
-  name: "transportedAmount",
-  label: "How Much?",
-  if: "$hasTransported",
+  help: "Is this needed?",
 },
 {
   $formkit: "select",
@@ -90,23 +102,24 @@ const schema = [
   options:['Truck', 'Ship', 'Train'],
 },
 {
-  $formkit: "text",
-  name: "hexTraveled",
-  label: "How many hexes you travelled",
+  $formkit: "number",
+  name: "transportedLegs",
+  label: "How many legs",
+  help: "If one-way trip 1, if RTB 2, if 5 full trips then 10 and so on",
+  if: "$hasTransported",
+},
+{
+  $formkit: "number",
+  name: "hexTraveledPerLeg",
+  label: "How many hexes you travelled PER LEG!",
   help: "Use common sense for distance. If you traveled from the center of the hex then 2 full hexes and then to the center again. That's 3",
   if: "$hasTransported",
 },
 {
   $formkit: "checkbox",
-  name: "hasRTB",
-  label: "Did you Returned to Base?",
+  name: "hasCodeRed",
+  label: "Is this a Code RED?",
 },
-{
-    $formkit: "text",
-    name: "returnedResources",
-    label: "Full of Raw resources?",
-    if: "$hasRTB",
-  },
 ];
 
 const data = ref({
@@ -114,19 +127,45 @@ totalPoints:0,
 });
 
 const transportPoints = computed(() => {
-return data.value.transportedAmount * 3;
+  var multiplier;
+  switch(data.value.transportedMedium){
+    case "Truck":
+      multiplier = 1
+      break;
+    case "Ship":
+    case "Train":
+      multiplier = 2
+  }
+return data.value.transportedLegs * data.value.hexTraveledPerLeg * multiplier;
 })
 
 const manufacturePoints = computed(() => {
-return data.value.manufacturedAmount * 3;
+return 0;
 })
 
 const gatheringPoints = computed(() => {
-return data.value.returnedResources * 3;
+  var multiplier;
+  switch(data.value.resourceGathered){
+    case 'Salvage':
+    case 'Coal':
+      multiplier = 1;
+    break;
+    case 'Sulfur':
+      multiplier = 2;
+    break;
+    case 'Components':
+      multiplier = 3;
+    break;
+  }
+  return Math.ceil(data.value.resourceAmount / 5000) * multiplier;
 })
 
 const totalPoints = computed(() => {
-return 0;
+  var multiplier = 0;
+  if (data.value.hasCodeRed) {
+    multiplier = 3;
+  }
+  return (gatheringPoints.value + manufacturePoints.value + transportPoints.value) * multiplier;
 })
 
 const handleSubmit = () => alert("Valid submit!");

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-secondary">
+  <div class="flex flex-col justify-center items-center">
     <h2>Your Debrief</h2>
     <p v-if="data.playerName">{{ data.playerName }}'s</p>
     <p v-if="data.ticketNumber">Debrief for Ticket: {{ data.ticketNumber }}</p>
@@ -7,7 +7,7 @@
 
     <p v-if="data.hasManufactured">Manufactured {{ data.manufacturedAmount }} {{ data.manufacturedGoods }} and earned {{ manufacturePoints }}</p>
     <p v-if="data.hasTransported">Transported {{ data.transportedGoods }} by {{ data.transportedMedium }} and earned {{ transportPoints }}</p>
-    <p v-if="totalPoints">TOTAL Points! : {{ totalPoints }}</p>
+    <p>TOTAL Points! : {{ totalPoints }}</p>
     <p v-if="data.hasCodeRed">Was it a Code RED? {{ data.hasCodeRed ? "YES" : "no" }}</p>
 
   </div>
@@ -161,14 +161,14 @@ const gatheringPoints = computed(() => {
 })
 
 const totalPoints = computed(() => {
-  var multiplier = 0;
+  var multiplier = 1;
   if (data.value.hasCodeRed) {
     multiplier = 3;
   }
   return (gatheringPoints.value + manufacturePoints.value + transportPoints.value) * multiplier;
 })
 
-const handleSubmit = () => alert("Valid submit!");
+const handleSubmit = () => navigator.clipboard.writeText(totalPoints.value);
 </script>
 
 <style>

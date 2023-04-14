@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center">
+  <div class="flex flex-col justify-center items-center bg-rats-ecru px-16 m-8">
     <h2>Your Debrief</h2>
     <p v-if="data.playerName">{{ data.playerName }}'s</p>
     <p v-if="data.ticketNumber">Debrief for Ticket: {{ data.ticketNumber }}</p>
@@ -11,20 +11,45 @@
     <p v-if="data.hasCodeRed">Was it a Code RED? {{ data.hasCodeRed ? "YES" : "no" }}</p>
 
   </div>
-                          
-  <FormKit type="form" v-model="data" @submit="handleSubmit">
+<div class="$reset bg-rats-black text-rats-ecru p-8">               
+  <FormKit 
+    type="form" 
+    v-model="data" 
+    submit-label="Copy to Clipboard"
+    @submit="handleSubmit">
       <FormKitSchema :schema="schema" :data="data" />
   </FormKit>
 
-<hr>
-<hr>
+  <textarea 
+    v-model="outputText"
+    class="formkit-input"
+    rows="8"
+    disabled>
+  </textarea>
+</div>
 
-<p>Coding stuff here pay no attention to this part hehe</p>
-<input type="text" class='form-control' v-bind:value=data disabled>
-<pre>
-  {{ data }}
-</pre>
+<div class="flex flex-col justify-center items-center pt-16">
+  <p>Coding stuff here pay no attention to this part hehe</p>
 
+  <FormKit
+  type="textarea"
+  label="Your Debrief"
+  rows="10"
+  v:model="outputText"
+  help="click the button to report!"
+  disabled="true"
+>
+</FormKit>
+  <pre>
+    {{ data }}
+  </pre>
+  <FormKit
+    type="color"
+    value="#FFFFFF"
+    label="Which background color will you like to use?"
+    help="This color will be remembered as your background color"
+    />
+</div>
 </template>
 
 <script setup>
@@ -124,6 +149,7 @@ const schema = [
 
 const data = ref({
 totalPoints:0,
+resourceAmount:0
 });
 
 const transportPoints = computed(() => {
@@ -168,11 +194,33 @@ const totalPoints = computed(() => {
   return (gatheringPoints.value + manufacturePoints.value + transportPoints.value) * multiplier;
 })
 
-const handleSubmit = () => navigator.clipboard.writeText(totalPoints.value);
+function outputTaggedTemplate(strings,gatheredExp,manufacturedExt,tranportedExp){
+  
+  return ``
+}
+
+const outputText = computed(() => {
+  var text = `
+Debrief for Ticket: ${data.value.ticketNumber}
+by ${data.value.playerName}
+Gathered ${data.value.resourceAmount} ${data.value.resourceGathered} and earned ${data.value.gatheringPoints}
+Manufactured ${data.value.manufacturedGoods} ${data.value.manufacturedAmount} and earned ${data.value.manufacturePoints}
+Transported ${data.value.transportedGoods} by ${data.value.transportedMedium} and earned ${data.value.transportPoints}
+TOTAL Points! : ${data.value.totalPoints}
+Was it a Code RED? ${data.value.hasCodeRed}
+`
+  return text;
+})
+
+const handleSubmit = () => {
+  navigator.clipboard.writeText(outputText.value);
+}
 </script>
 
 <style>
-
+.formkit-input {
+    color: #D0BE7D !important;
+}
 </style>
 /*
 figure out how localStorage works

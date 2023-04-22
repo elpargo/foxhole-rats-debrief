@@ -4,42 +4,31 @@
     <p v-if="data.playerName">{{ data.playerName }}'s</p>
     <p v-if="data.ticketNumber">Debrief for Ticket: {{ data.ticketNumber }}</p>
     <p v-if="data.hasResourceGathered">Gathered {{ data.resourceAmount }} {{data.resourceGathered }} and earned {{ gatheringPoints }}</p>
-
     <p v-if="data.hasManufactured">Manufactured {{ data.manufacturedAmount }} {{ data.manufacturedGoods }} and earned {{ manufacturePoints }}</p>
     <p v-if="data.hasTransported">Transported {{ data.transportedGoods }} by {{ data.transportedMedium }} and earned {{ transportPoints }}</p>
     <p>TOTAL Points! : {{ totalPoints }}</p>
     <p v-if="data.hasCodeRed">Was it a Code RED? {{ data.hasCodeRed ? "YES" : "no" }}</p>
-
   </div>
-<div class="$reset bg-rats-black text-rats-ecru p-8">               
-  <FormKit 
-    type="form" 
-    v-model="data" 
-    submit-label="Copy to Clipboard"
-    @submit="handleSubmit">
-      <FormKitSchema :schema="schema" :data="data" />
-  </FormKit>
+  <div class="$reset bg-rats-black text-rats-ecru p-8">               
+    <FormKit 
+      type="form" 
+      v-model="data" 
+      submit-label="Copy to Clipboard"
+      @submit="handleSubmit">
+        <FormKitSchema :schema="schema" :data="data" />
+    </FormKit>
 
-  <textarea 
-    v-model="outputText"
-    class="formkit-input"
-    rows="8"
-    disabled>
-  </textarea>
-</div>
+    <textarea 
+      v-model="outputText"
+      class="formkit-input"
+      rows="8"
+      disabled>
+    </textarea>
+  </div>
 
 <div class="flex flex-col justify-center items-center pt-16">
   <p>Coding stuff here pay no attention to this part hehe</p>
 
-  <FormKit
-  type="textarea"
-  label="Your Debrief"
-  rows="10"
-  v:model="outputText"
-  help="click the button to report!"
-  disabled="true"
->
-</FormKit>
   <pre>
     {{ data }}
   </pre>
@@ -53,9 +42,9 @@
 </template>
 
 <script setup>
-//import '@formkit/themes/genesis'
+import '@formkit/themes/genesis'
 import { FormKitSchema } from "@formkit/vue";
-import { ref, computed, reactive } from "vue";
+import { ref, computed, } from "vue";
 
 const schema = [
 {
@@ -221,6 +210,11 @@ const handleSubmit = () => {
 }
 </style>
 /*
+
+https://vueuse.org/core/useStorage/
+https://vueuse.org/core/useClipboard/
+
+
 figure out how localStorage works
 localStorage.getItem("one")
 */

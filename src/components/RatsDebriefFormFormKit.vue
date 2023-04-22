@@ -194,22 +194,20 @@ const totalPoints = computed(() => {
   return (gatheringPoints.value + manufacturePoints.value + transportPoints.value) * multiplier;
 })
 
-function outputTaggedTemplate(strings,gatheredExp,manufacturedExt,tranportedExp){
-  
-  return ``
-}
-
 const outputText = computed(() => {
+  var gatherText = `${data.value.hasResourceGathered ? `Gathered ${data.value.resourceAmount} ${data.value.resourceGathered} and earned ${gatheringPoints.value}LBP` : ""}`
+  var manufactureText = `${data.value.hasManufactured ? `Manufactured ${data.value.manufacturedGoods} ${data.value.manufacturedAmount} and earned ${manufacturePoints.value}LBP` : ""}`
+  var transportText = `${data.value.hasTransported ? `Transported ${data.value.transportedGoods} by ${data.value.transportedMedium} and earned ${transportPoints.value}LBP`: ""}`
   var text = `
-Debrief for Ticket: ${data.value.ticketNumber}
+Debrief for Ticket: #${data.value.ticketNumber}
 by ${data.value.playerName}
-Gathered ${data.value.resourceAmount} ${data.value.resourceGathered} and earned ${data.value.gatheringPoints}
-Manufactured ${data.value.manufacturedGoods} ${data.value.manufacturedAmount} and earned ${data.value.manufacturePoints}
-Transported ${data.value.transportedGoods} by ${data.value.transportedMedium} and earned ${data.value.transportPoints}
-TOTAL Points! : ${data.value.totalPoints}
+${gatherText}
+${manufactureText}
+${transportText}
+TOTAL Points! : ${totalPoints.value}
 Was it a Code RED? ${data.value.hasCodeRed}
 `
-  return text;
+  return text.trim();
 })
 
 const handleSubmit = () => {
